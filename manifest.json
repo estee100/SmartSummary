@@ -1,0 +1,34 @@
+{
+    "manifest_version": 3,
+    "name": "SmartSummary",
+    "version": "1.1",
+    "description": "Summarize selected text or the entire webpage using ChatGPT",
+    "permissions": ["activeTab", "scripting", "storage"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+      }
+    ],
+    "commands": {
+      "summarize_text": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+A"
+        },
+        "description": "Summarize selected text"
+      },
+      "summarize_page": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+X"
+        },
+        "description": "Summarize the entire page"
+      }
+    }
+  }
+  
