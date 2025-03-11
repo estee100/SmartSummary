@@ -27,6 +27,26 @@ function getSelectedText() {
 // Right now this gets all text form the page including headers, footers
 // and navbar elements. Have to change to only get important details only
 function getFullPageText() {
-    let pageText = document.body.innerText;
-    chrome.runtime.sendMessage({ type: "summarize", text: pageText});
+  chrome.scripting.executeScript({
+    target: { allFrames: false, tabId: null },
+    files: ["readability.js"]
+  }, () => {
+    chrome.scripting.executeScript({
+      target: { allFrames: false, tabId: null },
+      function: extractMainContent
+    });
+  });
+}
+
+function extractMainContent() {
+  try {
+    let article = new Readability(document).parse();
+    if (article && article.textContent) {
+      chrome.runtime.sendMessage({ type: "summarize", text: article.textContent });
+    } else {
+      chrome.runtime.sendMessage({ type: "summarize", text: "No readable content found." });
+    }
+  } catch (error) {
+    chrome.runtime.sendMessage({ type: "summarize", text: "Error extracting readable content." });
+  }
 }
